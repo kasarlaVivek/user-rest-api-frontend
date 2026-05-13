@@ -16,7 +16,7 @@ function AddUser() {
         // make post req to create new user
         try {
             setLoading(true);
-            let res = await fetch("http://localhost:3000/user-api/user", {
+            let res = await fetch("https://user-rest-api-1.onrender.com/user-api/user", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -26,7 +26,7 @@ function AddUser() {
             if (res.status === 201) {
                 // user created , it should navigate to userlist
                 navigate('/users-list')
-            }else{
+            } else {
                 throw new Error("error occured")
             }
         } catch (err) {

@@ -1,16 +1,71 @@
-# React + Vite
+# User REST API Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, responsive React frontend application for managing users via a REST API. This application features a premium "glassmorphism" dark-mode UI and provides seamless interactions for adding, viewing, editing, and deleting users.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Premium Dark Mode UI**: Built with pure CSS, featuring vibrant neon gradients, smooth micro-interactions, and frosted glass components.
+- **User Management**: 
+  - Add new users with form validation
+  - View a list of all existing users
+  - View detailed profile pages for individual users
+  - Edit and update user details
+  - Activate or permanently delete users
+- **Real-time Notifications**: Custom sliding toast notifications to elegantly inform users of errors or success states.
+- **Client-Side Routing**: Fast and smooth navigation handled by `react-router`.
+- **Form Handling**: Efficient and reliable form state management using `react-hook-form`.
 
-## React Compiler
+## Technology Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: React (Vite)
+- **Styling**: Vanilla CSS (Custom Design System)
+- **Routing**: React Router
+- **Forms**: React Hook Form
+- **Typography**: Outfit (Google Fonts)
 
-## Expanding the ESLint configuration
+## Project Structure
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```text
+src/
+├── Components/
+│   ├── AddUser.jsx      # Form to create new users
+│   ├── Footer.jsx       # Global footer
+│   ├── Header.jsx       # Global navigation bar
+│   ├── Home.jsx         # Landing page dashboard
+│   ├── RootLayout.jsx   # Layout wrapper containing Header & Footer
+│   ├── User.jsx         # Individual user profile & edit form
+│   └── UsersList.jsx    # Display all users in a list
+├── App.jsx              # Application router setup
+├── main.jsx             # React entry point
+└── index.css            # Global premium styling & design system
+```
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v14 or higher recommended)
+- npm or yarn
+
+### Installation
+1. Clone the repository and navigate to the project directory:
+   ```bash
+   cd user-rest-api-frontend
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+4. Open your browser and visit the local URL provided in your terminal (usually `http://localhost:5173`).
+
+## Backend API
+This frontend connects to a REST API hosted at:
+`https://user-rest-api-1.onrender.com/user-api/`
+
+*Note: If the API is hosted on a free tier like Render, initial requests may take a moment as the server spins up from an idle state.*

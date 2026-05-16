@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 function UsersList() {
     let [users, setUsers] = useState([]);
     let [error, setError] = useState(null);
-    let [loading, setLoading] = useState(false);
+    let [loading, setLoading] = useState(true);
 
     let navigate = useNavigate();
 
@@ -14,22 +14,16 @@ function UsersList() {
                 let res = await fetch('https://user-rest-api-1.onrender.com/user-api/users', {
                     method: "GET",
                 });
-                if (res.status === 201) {
+                if (res.status === 200 || res.status === 201) {
                     let data = await res.json();
-                    setUsers(data.payload);
+                    setUsers(data.payload || []);
                 } else {
-                    throw new Error("data failed to fetch")
+                    throw new Error("Failed to fetch data")
                 }
             } catch (err) {
                 setError(err)
             } finally {
                 setLoading(false);
-            }
-            if (loading) {
-                return <p>Loading</p>
-            }
-            if (error) {
-                return <p>{error.message}</p>
             }
         }
         getUsers();
@@ -39,29 +33,31 @@ function UsersList() {
         navigate('/user', { state: userObj })
     }
 
-    return (
-        <div className='max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl border border-gray-100'>
-            <h1 className='text-2xl font-bold text-gray-800 mb-6 text-center'>List of Users</h1>
-            {users.map((userObj, index) => (
-                <div 
-                    key={userObj._id} 
-                    className={`border-2 p-3 mb-2 rounded-lg cursor-pointer transition-all hover:shadow-md ${!userObj.status ? 'bg-gray-50 border-gray-200 opacity-75' : 'bg-white border-blue-50'}`} 
-                    onClick={() => goToUser(userObj)}
-                >
-                    <div className="flex justify-between items-center">
-                        <div>
-                            <p className={`font-semibold ${!userObj.status ? 'text-gray-500' : 'text-gray-800'}`}>{userObj.name}</p>
-                            <p className="text-sm text-gray-500">{userObj.email}</p>
-                        </div>
-                        <span className={`text-xs font-bold px-2 py-1 rounded-full ${userObj.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                            {userObj.status ? 'ACTIVE' : 'INACTIVE'}
-                        </span>
-                    </div>
-                </div>
-            ))}
-        </div>
+    if (loading) {
+        return <p style={{textAlign: 'center', fontSize: '1.2rem', marginTop: '3rem'}}>Loading users...</p>
+    }
+    
+    if (error) {
+        return <p style={{color: 'var(--danger)', textAlign: 'center', marginTop: '3rem'}}>{error.message}</p>
+    }
 
+    return (
+        <div className='glass-card' style={{maxWidth: '600px'}}>
+            <h1 className='page-title'>List of Users</h1>
+            <div className="user-list">
+                {users.length === 0 ? (
+                    <p style={{textAlign: 'center', color: 'var(--text-muted)'}}>No users found.</p>
+                ) : (
+                    users.map((userObj) => (
+                        <div key={userObj._id} className="user-card" onClick={() => goToUser(userObj)}>
+                            <p className="user-name">{userObj.name}</p>
+                            <p className="user-email">{userObj.email}</p>
+                        </div>
+                    ))
+                )}
+            </div>
+        </div>
     )
 }
 
-export default UsersList
+export default UsersList;

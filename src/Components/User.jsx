@@ -7,12 +7,12 @@ function User() {
   let navigate = useNavigate();
   let [user, setUser] = useState(state);
   let [isEditMode, setIsEditMode] = useState(false);
-  const { register, handleSubmit, setValue } = useForm({
+  const { register, handleSubmit } = useForm({
     defaultValues: user
   });
 
   if (!user) {
-    return <div className="text-center mt-10">No user data found.</div>;
+    return <div style={{textAlign: 'center', marginTop: '3rem'}}>No user data found. Please go back to the user list.</div>;
   }
 
   const deleteUser = async () => {
@@ -20,7 +20,7 @@ function User() {
       let res = await fetch(`https://user-rest-api-1.onrender.com/user-api/user/${user._id}`, {
         method: "DELETE"
       });
-      if (res.status === 201) {
+      if (res.status === 200 || res.status === 201) {
         alert("User deleted successfully");
         navigate('/users-list');
       }
@@ -34,7 +34,7 @@ function User() {
       let res = await fetch(`https://user-rest-api-1.onrender.com/user-api/user/${user._id}`, {
         method: "PATCH"
       });
-      if (res.status === 201) {
+      if (res.status === 200 || res.status === 201) {
         let data = await res.json();
         setUser(data.payload);
         alert("User activated successfully");
@@ -51,7 +51,7 @@ function User() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedUser)
       });
-      if (res.status === 201) {
+      if (res.status === 200 || res.status === 201) {
         let data = await res.json();
         setUser(data.payload);
         setIsEditMode(false);
@@ -63,103 +63,66 @@ function User() {
   };
 
   return (
-    <div className='max-w-md mx-auto mt-10 p-6 bg-white shadow-lg rounded-xl border border-gray-100'>
-      <h2 className='text-2xl font-bold text-gray-800 mb-6 text-center'>User Profile</h2>
+    <div className='glass-card'>
+      <h2 className='page-title'>User Profile</h2>
       
       {!isEditMode ? (
-        <div className="space-y-4">
-          <div className="border-b pb-2">
-            <p className="text-sm text-gray-500">Name</p>
-            <p className="font-semibold text-gray-800">{user.name}</p>
+        <div className="profile-info">
+          <div className="info-group">
+            <span className="info-label">Name</span>
+            <span className="info-value">{user.name}</span>
           </div>
-          <div className="border-b pb-2">
-            <p className="text-sm text-gray-500">Email</p>
-            <p className="font-semibold text-gray-800">{user.email}</p>
+          <div className="info-group">
+            <span className="info-label">Email</span>
+            <span className="info-value">{user.email}</span>
           </div>
-          <div className="border-b pb-2">
-            <p className="text-sm text-gray-500">Date of Birth</p>
-            <p className="font-semibold text-gray-800">{user.dateOfBirth}</p>
+          <div className="info-group">
+            <span className="info-label">Date of Birth</span>
+            <span className="info-value">{user.dateOfBirth ? new Date(user.dateOfBirth).toLocaleDateString() : 'N/A'}</span>
           </div>
-          <div className="border-b pb-2">
-            <p className="text-sm text-gray-500">Mobile Number</p>
-            <p className="font-semibold text-gray-800">{user.mobileNumber}</p>
+          <div className="info-group">
+            <span className="info-label">Mobile Number</span>
+            <span className="info-value">{user.mobileNumber}</span>
           </div>
-          <div className="border-b pb-2">
-            <p className="text-sm text-gray-500">Status</p>
-            <p className={`font-semibold ${user.status ? 'text-green-600' : 'text-red-600'}`}>
+          <div className="info-group" style={{borderBottom: 'none'}}>
+            <span className="info-label">Status</span>
+            <span className={`info-value ${user.status ? 'status-active' : 'status-inactive'}`}>
               {user.status ? 'Active' : 'Inactive'}
-            </p>
+            </span>
           </div>
 
-          <div className="flex gap-4 mt-6">
+          <div className="btn-group">
             {user.status ? (
               <>
-                <button 
-                  onClick={() => setIsEditMode(true)} 
-                  className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-lg transition-colors"
-                >
+                <button onClick={() => setIsEditMode(true)} className="btn btn-warning">
                   Edit
                 </button>
-                <button 
-                  onClick={deleteUser} 
-                  className="flex-1 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-lg transition-colors"
-                >
+                <button onClick={deleteUser} className="btn btn-danger">
                   Delete
                 </button>
               </>
             ) : (
-              <button 
-                onClick={activateUser} 
-                className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition-colors"
-              >
-                Activate
+              <button onClick={activateUser} className="btn btn-success" style={{width: '100%'}}>
+                Activate User
               </button>
             )}
           </div>
-          <button 
-            onClick={() => navigate('/users-list')} 
-            className="w-full mt-4 text-gray-500 hover:text-gray-700 transition-colors"
-          >
-            Back to List
+          <button onClick={() => navigate('/users-list')} className="back-link">
+            ← Back to Users List
           </button>
         </div>
       ) : (
-        <form onSubmit={handleSubmit(onUpdateUser)} className="flex flex-col gap-4">
-          <input 
-            type="text" 
-            {...register("name")} 
-            placeholder="Name" 
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
-          <input 
-            type="email" 
-            {...register("email")} 
-            placeholder="Email" 
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
-          <input 
-            type="date" 
-            {...register("dateOfBirth")} 
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
-          <input 
-            type="number" 
-            {...register("mobileNumber")} 
-            placeholder="Mobile Number" 
-            className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
-          />
-          <div className="flex gap-4 mt-2">
-            <button 
-              type="submit" 
-              className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition-colors"
-            >
-              Save
+        <form onSubmit={handleSubmit(onUpdateUser)} className="form-group">
+          <input type="text" {...register("name")} placeholder="Name" className="input-field" />
+          <input type="email" {...register("email")} placeholder="Email" className="input-field" />
+          <input type="date" {...register("dateOfBirth")} className="input-field" />
+          <input type="number" {...register("mobileNumber")} placeholder="Mobile Number" className="input-field" />
+          
+          <div className="btn-group">
+            <button type="submit" className="btn btn-primary">
+              Save Changes
             </button>
-            <button 
-              type="button" 
-              onClick={() => setIsEditMode(false)} 
-              className="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 rounded-lg transition-colors"
-            >
+            <button type="button" onClick={() => setIsEditMode(false)} className="btn btn-secondary">
               Cancel
             </button>
           </div>
@@ -169,4 +132,4 @@ function User() {
   )
 }
 
-export default User
+export default User;

@@ -5,12 +5,11 @@ import { Outlet } from 'react-router'
 
 function RootLayout() {
   return (
-    <div>
+    <div className="app-container">
         <Header />
-        <div className="mx-20 min-h-screen"> 
+        <main className="main-content"> 
           <Outlet  />
-        </div>
-            
+        </main>
         <Footer />
     </div>
   )
